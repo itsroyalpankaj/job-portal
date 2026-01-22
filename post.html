@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Jhakash Net Point</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body{margin:0;font-family:Arial;background:#f2f2f2}
+    header{background:#9b0000;color:white;text-align:center;padding:15px}
+    .box{background:white;margin:10px;padding:15px;border-radius:6px}
+    h2{color:#9b0000}
+    .btn{
+      display:inline-block;
+      background:#25D366;
+      color:white;
+      padding:8px 15px;
+      text-decoration:none;
+      border-radius:5px;
+      margin-top:10px;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>JHAKASH NET POINT</h2>
+  <p>Official Govt Job Updates</p>
+</header>
+
+<div class="box">
+  <h2 id="title">Loading...</h2>
+  <p><b id="category"></b></p>
+  <p id="description"></p>
+
+  <a id="share" class="btn" target="_blank">📤 Share on WhatsApp</a>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAkboejn-LfL0dsTKbGHA4QkM1cVP_7HZY",
+  authDomain: "admin-pannel-a598f.firebaseapp.com",
+  projectId: "admin-pannel-a598f",
+  storageBucket: "admin-pannel-a598f.firebasestorage.app",
+  messagingSenderId: "892006987784",
+  appId: "1:892006987784:web:ed97c609f77edad8d339bd"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+const urlParams = new URLSearchParams(window.location.search);
+const postId = urlParams.get("id");
+
+db.collection("posts").doc(postId).get().then(doc=>{
+  if(doc.exists){
+    const d = doc.data();
+    document.getElementById("title").innerText = d.title;
+    document.getElementById("category").innerText = d.category;
+    document.getElementById("description").innerText = d.description;
+
+    document.getElementById("share").href =
+      "https://wa.me/?text=" +
+      encodeURIComponent(d.title + " - " + window.location.href);
+  }
+});
+</script>
+
+</body>
+</html>
