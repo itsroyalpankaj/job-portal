@@ -31,6 +31,40 @@
   <h3>🔔 Welcome</h3>
   <p>Yahan par job, exam aur yojana ki daily update milegi.</p>
 </div>
+<div id="posts"></div>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAkboejn-LfL0dsTKbGHA4QkM1cVP_7HZY",
+    authDomain: "admin-pannel-a598f.firebaseapp.com",
+    projectId: "admin-pannel-a598f",
+    storageBucket: "admin-pannel-a598f.firebasestorage.app",
+    messagingSenderId: "892006987784",
+    appId: "1:892006987784:web:ed97c609f77edad8d339bd"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  db.collection("posts")
+  .onSnapshot(snapshot => {
+    let html = "";
+    snapshot.forEach(doc => {
+      const d = doc.data();
+      html += `
+        <div class="box">
+          <h3>${d.title}</h3>
+          <p><b>${d.category}</b></p>
+          <p>${d.description}</p>
+        </div>
+      `;
+    });
+    document.getElementById("posts").innerHTML = html;
+  });
+</script>
+  
 </body>
 </html>
