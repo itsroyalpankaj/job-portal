@@ -1,80 +1,160 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin Panel</title>
+  <title>Admin Panel - Jhakash Net Point</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <style>
     body{font-family:Arial;background:#f2f2f2;margin:0}
-    .box{background:#fff;margin:20px;padding:20px;border-radius:8px}
-    input,button{width:100%;padding:10px;margin-top:10px}
-    button{background:#0a7cff;color:#fff;border:none}
+    .box{background:#fff;margin:10px;padding:15px;border-radius:8px}
+    input, textarea, select, button{
+      width:100%;padding:10px;margin-top:8px
+    }
+    button{background:#9b0000;color:#fff;border:none;font-weight:bold}
+    h3{margin-top:0;color:#9b0000}
+    .post{
+      border-bottom:1px solid #ddd;
+      padding:8px 0;
+    }
+    .btn{
+      padding:5px 10px;
+      margin-right:5px;
+      font-size:13px;
+    }
   </style>
 </head>
 
 <body>
 
+<!-- LOGIN -->
 <div class="box" id="loginBox">
-  <h3>Admin Login</h3>
-  <input type="email" id="email" placeholder="Email">
+  <h3>🔐 Admin Login</h3>
+  <input type="email" id="email" placeholder="Admin Email">
   <input type="password" id="password" placeholder="Password">
   <button onclick="login()">Login</button>
   <p id="msg"></p>
 </div>
 
-<div class="box" id="panel" style="display:none">
-  <h3>Add New Post</h3>
+<!-- PANEL -->
+<div class="box" id="panel" style="display:none;">
+  <h3>➕ Add / Edit Post</h3>
 
-  <input id="title" placeholder="Post Title">
-  <input id="category" placeholder="Category">
-  <textarea id="description" placeholder="Description" style="width:100%;height:80px"></textarea>
+  <input type="text" id="title" placeholder="Post Title">
 
-  <button onclick="addPost()">Publish</button>
+  <select id="category">
+    <option>Latest Job</option>
+    <option>Admit Card</option>
+    <option>Result</option>
+    <option>Answer Key</option>
+    <option>Yojana</option>
+  </select>
+
+  <textarea id="description" placeholder="Post Description"></textarea>
+
+  <button onclick="savePost()">Save Post</button>
+
+  <hr>
+
+  <h3>📋 All Posts</h3>
+  <div id="allPosts"></div>
 </div>
 
-<!-- Firebase compat -->
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAkboejn-LfL0dsTKbGHA4QkM1cVP_7HZY",
-    authDomain: "admin-pannel-a598f.firebaseapp.com",
-    projectId: "admin-pannel-a598f",
-    storageBucket: "admin-pannel-a598f.firebasestorage.app",
-    messagingSenderId: "892006987784",
-    appId: "1:892006987784:web:ed97c609f77edad8d339bd"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyAkboejn-LfL0dsTKbGHA4QkM1cVP_7HZY",
+  authDomain: "admin-pannel-a598f.firebaseapp.com",
+  projectId: "admin-pannel-a598f",
+  storageBucket: "admin-pannel-a598f.firebasestorage.app",
+  messagingSenderId: "892006987784",
+  appId: "1:892006987784:web:ed97c609f77edad8d339bd"
+};
 
-  firebase.initializeApp(firebaseConfig);
+firebase.initializeApp(firebaseConfig);
 
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-  function login(){
-    const email = document.getElementById("email").value;
-    const pass  = document.getElementById("password").value;
+let editId = null;
 
-    auth.signInWithEmailAndPassword(email, pass)
-    .then(()=>{
-      document.getElementById("loginBox").style.display="none";
-      document.getElementById("panel").style.display="block";
-    })
-    .catch(err=>{
-      document.getElementById("msg").innerText = err.message;
+/* LOGIN */
+function login(){
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+
+  auth.signInWithEmailAndPassword(email, pass)
+  .then(()=>{
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("panel").style.display="block";
+    loadPosts();
+  })
+  .catch(err=>{
+    document.getElementById("msg").innerText = err.message;
+  });
+}
+
+/* LOAD POSTS */
+function loadPosts(){
+  db.collection("posts").orderBy("date","desc")
+  .onSnapshot(snapshot=>{
+    let html="";
+    snapshot.forEach(doc=>{
+      const d = doc.data();
+      html += `
+        <div class="post">
+          <b>${d.title}</b><br>
+          <small>${d.category}</small><br>
+          <button class="btn" onclick="editPost('${doc.id}','${d.title}','${d.category}','${d.description.replace(/'/g,"")}')">✏ Edit</button>
+          <button class="btn" onclick="deletePost('${doc.id}')">❌ Delete</button>
+        </div>
+      `;
     });
-  }
+    document.getElementById("allPosts").innerHTML = html;
+  });
+}
 
-  function addPost(){
+/* SAVE / UPDATE */
+function savePost(){
+  const title = document.getElementById("title").value;
+  const category = document.getElementById("category").value;
+  const description = document.getElementById("description").value;
+
+  if(editId){
+    db.collection("posts").doc(editId).update({
+      title, category, description
+    });
+    editId = null;
+  }else{
     db.collection("posts").add({
-      title: document.getElementById("title").value,
-      category: document.getElementById("category").value,
-      description: document.getElementById("description").value,
-      date: new Date()
-    }).then(()=>{
-      alert("Post Published ✅");
+      title,
+      category,
+      description,
+      date: firebase.firestore.FieldValue.serverTimestamp()
     });
   }
+
+  document.getElementById("title").value="";
+  document.getElementById("description").value="";
+}
+
+/* EDIT */
+function editPost(id,title,cat,desc){
+  editId = id;
+  document.getElementById("title").value = title;
+  document.getElementById("category").value = cat;
+  document.getElementById("description").value = desc;
+}
+
+/* DELETE */
+function deletePost(id){
+  if(confirm("Delete this post?")){
+    db.collection("posts").doc(id).delete();
+  }
+}
 </script>
 
 </body>
