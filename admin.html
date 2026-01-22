@@ -4,50 +4,42 @@
   <title>Admin Panel - Jhakash Job Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-
   <style>
-    body{font-family:Arial;background:#f2f2f2;margin:0;}
-    .box{background:#fff;padding:20px;margin:20px;border-radius:10px;}
-    input,select,textarea,button{
-      width:100%;padding:10px;margin-top:10px;
+    body{font-family:Arial;background:#f2f2f2;margin:0}
+    .box{background:white;margin:15px;padding:15px;border-radius:8px}
+    input, textarea, button{
+      width:100%;padding:10px;margin:8px 0;border-radius:6px;border:1px solid #ccc
     }
-    button{background:#0a7cff;color:white;border:none;}
+    button{background:#0a7cff;color:white;font-weight:bold;border:none}
   </style>
 </head>
 
 <body>
 
 <div class="box" id="loginBox">
-  <h2>Admin Login</h2>
+  <h3>🔐 Admin Login</h3>
   <input type="email" id="email" placeholder="Email">
   <input type="password" id="password" placeholder="Password">
   <button onclick="login()">Login</button>
 </div>
 
-<div class="box" id="panelBox" style="display:none;">
-  <h2>Add New Post</h2>
-
-  <select id="category">
-    <option>Latest Job</option>
-    <option>Govt Exam</option>
-    <option>Sarkari Yojana</option>
-    <option>Result</option>
-  </select>
+<div class="box" id="adminBox" style="display:none;">
+  <h3>📝 Add New Post</h3>
 
   <input type="text" id="title" placeholder="Post Title">
-  <textarea id="desc" placeholder="Post Description"></textarea>
+  <input type="text" id="category" placeholder="Category">
+  <textarea id="description" placeholder="Post Description"></textarea>
 
   <button onclick="addPost()">Publish Post</button>
 </div>
 
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
 <script>
-  // 🔥 PASTE YOUR FIREBASE CONFIG HERE
-  const firebaseConfig = {
-    const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyAkboejn-LfL0dsTKbGHA4QkM1cVP_7HZY",
   authDomain: "admin-pannel-a598f.firebaseapp.com",
   projectId: "admin-pannel-a598f",
@@ -55,34 +47,35 @@
   messagingSenderId: "892006987784",
   appId: "1:892006987784:web:ed97c609f77edad8d339bd"
 };
-  };
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
+firebase.initializeApp(firebaseConfig);
 
-  function login(){
-    const email = document.getElementById("email").value;
-    const pass = document.getElementById("password").value;
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-    auth.signInWithEmailAndPassword(email, pass)
-    .then(()=>{
-      document.getElementById("loginBox").style.display="none";
-      document.getElementById("panelBox").style.display="block";
-    })
-    .catch(err=>alert(err.message));
-  }
+function login(){
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  function addPost(){
-    db.collection("posts").add({
-      category: document.getElementById("category").value,
-      title: document.getElementById("title").value,
-      description: document.getElementById("desc").value,
-      date: new Date()
-    }).then(()=>{
-      alert("Post Successfully Added!");
-    });
-  }
+  auth.signInWithEmailAndPassword(email, password)
+  .then(() => {
+    document.getElementById("loginBox").style.display="none";
+    document.getElementById("adminBox").style.display="block";
+    alert("Login Successful ✅");
+  })
+  .catch(err => alert(err.message));
+}
+
+function addPost(){
+  db.collection("posts").add({
+    title: document.getElementById("title").value,
+    category: document.getElementById("category").value,
+    description: document.getElementById("description").value,
+    date: firebase.firestore.FieldValue.serverTimestamp()
+  }).then(()=>{
+    alert("Post Published ✅");
+  });
+}
 </script>
 
 </body>
