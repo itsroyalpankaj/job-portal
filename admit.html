@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Latest Jobs - Jhakash Net Point</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+
+<h2>🔥 Latest Jobs</h2>
+<div id="posts"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script>
+firebase.initializeApp({
+  apiKey: "AIzaSyAkboejn-LfL0dsTKbGHA4QkM1cVP_7HZY",
+  authDomain: "admin-pannel-a598f.firebaseapp.com",
+  projectId: "admin-pannel-a598f"
+});
+
+const db = firebase.firestore();
+
+db.collection("posts")
+.where("category","==","Admit Card")
+.orderBy("date","desc")
+.onSnapshot(snap=>{
+  let html="";
+  snap.forEach(doc=>{
+    const d=doc.data();
+    html+=`<p><a href="post.html?id=${doc.id}">${d.title}</a></p>`;
+  });
+  document.getElementById("posts").innerHTML=html;
+});
+</script>
+
+</body>
+</html>
