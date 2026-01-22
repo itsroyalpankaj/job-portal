@@ -1,73 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Jhakash Net Point</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<title>Jhakash Net Point</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <style>
-    body{
-      margin:0;
-      font-family:Arial, Helvetica, sans-serif;
-      background:#f2f2f2;
-    }
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:#f2f2f2;
+}
 
-    header{
-      background:#9b0000;
-      color:white;
-      text-align:center;
-      padding:15px;
-    }
+header{
+  background:#9b0000;
+  color:white;
+  text-align:center;
+  padding:15px;
+}
 
-    header h1{
-      margin:0;
-      font-size:26px;
-      font-weight:bold;
-    }
+header h1{
+  margin:0;
+  font-size:26px;
+}
 
-    header p{
-      margin:5px 0 0;
-      font-size:14px;
-    }
+nav{
+  background:#fff;
+  border-bottom:2px solid #9b0000;
+  text-align:center;
+  padding:10px;
+}
 
-    nav{
-      background:#fff;
-      border-bottom:2px solid #9b0000;
-      text-align:center;
-      padding:10px;
-    }
+nav a{
+  margin:8px;
+  text-decoration:none;
+  color:#9b0000;
+  font-weight:bold;
+}
 
-    nav a{
-      margin:8px;
-      text-decoration:none;
-      color:#9b0000;
-      font-weight:bold;
-      font-size:14px;
-    }
+.box{
+  background:white;
+  margin:10px;
+  padding:15px;
+  border-radius:6px;
+  border-left:5px solid #9b0000;
+}
 
-    .box{
-      background:white;
-      margin:10px;
-      padding:15px;
-      border-radius:6px;
-      border-left:5px solid #9b0000;
-    }
+.box h3{
+  margin:0;
+  font-size:16px;
+  color:#9b0000;
+}
 
-    .box h3{
-      margin-top:0;
-      color:#9b0000;
-      font-size:16px;
-    }
+.new{
+  background:red;
+  color:white;
+  font-size:11px;
+  padding:2px 6px;
+  border-radius:4px;
+  margin-left:5px;
+}
 
-    footer{
-      background:#222;
-      color:white;
-      text-align:center;
-      padding:12px;
-      font-size:13px;
-      margin-top:20px;
-    }
-  </style>
+footer{
+  background:#222;
+  color:white;
+  text-align:center;
+  padding:12px;
+  font-size:13px;
+}
+</style>
 </head>
 
 <body>
@@ -81,64 +82,95 @@
   <a href="#">Latest Jobs</a>
   <a href="#">Admit Card</a>
   <a href="#">Result</a>
-  <a href="#">Answer Key</a>
   <a href="#">Yojana</a>
 </nav>
 
 <div class="box">
-  <h3>🔔 Welcome</h3>
-  <p>
-    Jhakash Net Point par aapko sabhi sarkari naukri,
-    govt exam, result, admit card aur yojana ki daily update milegi.
-  </p>
+  <input type="text" id="searchBox"
+  placeholder="🔍 Search Job / Exam / Yojana"
+  style="width:100%;padding:10px;font-size:16px"
+  onkeyup="searchPost()">
 </div>
 
-<!-- POSTS -->
 <div id="posts"></div>
 
-<!-- Firebase SDK -->
+<!-- FIREBASE -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
 <script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAkboejn-LfL0dsTKbGHA4QkM1cVP_7HZY",
-    authDomain: "admin-pannel-a598f.firebaseapp.com",
-    projectId: "admin-pannel-a598f",
-    storageBucket: "admin-pannel-a598f.firebasestorage.app",
-    messagingSenderId: "892006987784",
-    appId: "1:892006987784:web:ed97c609f77edad8d339bd"
-  };
+const firebaseConfig = {
+  apiKey: "AIzaSyAkboejn-LfL0dsTKbGHA4QkM1cVP_7HZY",
+  authDomain: "admin-pannel-a598f.firebaseapp.com",
+  projectId: "admin-pannel-a598f",
+  storageBucket: "admin-pannel-a598f.firebasestorage.app",
+  messagingSenderId: "892006987784",
+  appId: "1:892006987784:web:ed97c609f77edad8d339bd"
+};
 
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
 
-  db.collection("posts")
-    .orderBy("date","desc")
-    .onSnapshot(snapshot => {
-      let html = "";
-      snapshot.forEach(doc => {
-        const d = doc.data();
+let allPosts = [];
 
-        html += `
-          <div class="box">
-            <h3>
-              <a href="post.html?id=${doc.id}"
-                 style="text-decoration:none;color:#9b0000">
-                 ${d.title}
-              </a>
-            </h3>
-            <p><b>${d.category}</b></p>
-            <p>${d.description.substring(0,120)}...</p>
-          </div>
-        `;
-      });
-      document.getElementById("posts").innerHTML = html;
+/* LOAD POSTS */
+db.collection("posts")
+.orderBy("date","desc")
+.onSnapshot(snapshot=>{
+  allPosts = [];
+  snapshot.forEach(doc=>{
+    allPosts.push({
+      id: doc.id,
+      ...doc.data()
     });
+  });
+  renderPosts(allPosts);
+});
+
+/* RENDER POSTS */
+function renderPosts(list){
+  let html = "";
+  list.forEach(item=>{
+    let isNew = "";
+
+    if(item.date){
+      const diff = Date.now() - item.date.toDate().getTime();
+      if(diff < 2 * 24 * 60 * 60 * 1000){
+        isNew = '<span class="new">NEW</span>';
+      }
+    }
+
+    html += `
+      <div class="box">
+        <h3>
+          <a href="post.html?id=${item.id}"
+          style="text-decoration:none;color:#9b0000">
+            ${item.title}
+          </a>
+          ${isNew}
+        </h3>
+        <p><b>${item.category}</b></p>
+        <p>${item.description.substring(0,120)}...</p>
+      </div>
+    `;
+  });
+
+  document.getElementById("posts").innerHTML = html;
+}
+
+/* SEARCH */
+function searchPost(){
+  const text = document.getElementById("searchBox").value.toLowerCase();
+  const result = allPosts.filter(p =>
+    p.title.toLowerCase().includes(text) ||
+    p.category.toLowerCase().includes(text)
+  );
+  renderPosts(result);
+}
 </script>
 
 <footer>
-  © 2026 Jhakash Net Point | All Rights Reserved
+© 2026 Jhakash Net Point | All Rights Reserved
 </footer>
 
 </body>
