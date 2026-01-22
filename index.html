@@ -10,6 +10,8 @@
     nav{background:#ffffff;padding:10px;text-align:center;}
     nav a{margin:10px;text-decoration:none;color:#0a7cff;font-weight:bold;}
     .box{background:white;margin:10px;padding:15px;border-radius:8px;}
+    .btn{display:inline-block;background:#0a7cff;color:white;
+         padding:6px 12px;border-radius:5px;text-decoration:none;}
   </style>
 </head>
 
@@ -21,18 +23,15 @@
 </header>
 
 <nav>
-  <a href="#">Latest Jobs</a>
-  <a href="#">Govt Exam</a>
-  <a href="#">Yojana</a>
-  <a href="#">Result</a>
+  <a href="#" onclick="loadCategory('All')">All</a>
+  <a href="#" onclick="loadCategory('Latest Job')">Latest Job</a>
+  <a href="#" onclick="loadCategory('Govt Exam')">Govt Exam</a>
+  <a href="#" onclick="loadCategory('Yojana')">Yojana</a>
 </nav>
 
-<div class="box">
-  <h3>🔔 Welcome</h3>
-  <p>Yahan par job, exam aur yojana ki daily update milegi.</p>
-</div>
 <div id="posts"></div>
-<!-- Firebase SDK -->
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
@@ -49,22 +48,29 @@
   firebase.initializeApp(firebaseConfig);
   const db = firebase.firestore();
 
-  db.collection("posts")
-  .onSnapshot(snapshot => {
-    let html = "";
-    snapshot.forEach(doc => {
-      const d = doc.data();
-      html += `
-        <div class="box">
-          <h3>${d.title}</h3>
-          <p><b>${d.category}</b></p>
-          <p>${d.description}</p>
-        </div>
-      `;
+  function loadCategory(cat){
+    let query = db.collection("posts").orderBy("date","desc");
+
+    query.onSnapshot(snapshot=>{
+      let html="";
+      snapshot.forEach(doc=>{
+        const d = doc.data();
+        if(cat==="All" || d.category===cat){
+          html += `
+          <div class="box">
+            <h3>${d.title}</h3>
+            <p><b>${d.category}</b></p>
+            <p>${d.description}</p>
+            <a class="btn" href="https://wa.me/?text=${encodeURIComponent(d.title)}" target="_blank">📤 Share</a>
+          </div>`;
+        }
+      });
+      document.getElementById("posts").innerHTML = html;
     });
-    document.getElementById("posts").innerHTML = html;
-  });
+  }
+
+  loadCategory("All");
 </script>
-  
+
 </body>
 </html>
