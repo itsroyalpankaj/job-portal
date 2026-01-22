@@ -56,7 +56,7 @@
     .box h3{
       margin-top:0;
       color:#9b0000;
-      font-size:18px;
+      font-size:16px;
     }
 
     footer{
@@ -79,9 +79,9 @@
 
 <nav>
   <a href="#">Latest Jobs</a>
-  <a href="#">Govt Exam</a>
   <a href="#">Admit Card</a>
   <a href="#">Result</a>
+  <a href="#">Answer Key</a>
   <a href="#">Yojana</a>
 </nav>
 
@@ -93,10 +93,10 @@
   </p>
 </div>
 
-<!-- POSTS LOAD HERE -->
+<!-- POSTS -->
 <div id="posts"></div>
 
-<!-- FIREBASE SDK -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
@@ -114,16 +114,22 @@
   const db = firebase.firestore();
 
   db.collection("posts")
-    .orderBy("date", "desc")
+    .orderBy("date","desc")
     .onSnapshot(snapshot => {
       let html = "";
       snapshot.forEach(doc => {
         const d = doc.data();
+
         html += `
           <div class="box">
-            <h3>${d.title}</h3>
+            <h3>
+              <a href="post.html?id=${doc.id}"
+                 style="text-decoration:none;color:#9b0000">
+                 ${d.title}
+              </a>
+            </h3>
             <p><b>${d.category}</b></p>
-            <p>${d.description}</p>
+            <p>${d.description.substring(0,120)}...</p>
           </div>
         `;
       });
