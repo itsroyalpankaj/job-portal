@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Jhakash Net Point</title>
@@ -9,64 +9,127 @@
 body{
   margin:0;
   font-family:Arial;
-  background:#f2f2f2;
+  background:#f4f6f8;
 }
 
+/* HEADER */
 header{
-  background:#9b0000;
+  background:linear-gradient(to right,#1a237e,#0d47a1);
   color:white;
   text-align:center;
   padding:15px;
 }
+header h1{margin:0;font-size:26px;}
+header p{margin:5px 0 0;font-size:14px;}
 
-header h1{
-  margin:0;
-  font-size:26px;
-}
-
+/* MENU */
 nav{
-  background:#fff;
-  border-bottom:2px solid #9b0000;
+  background:#c62828;
+  display:flex;
+  overflow-x:auto;
+}
+nav a{
+  color:white;
+  padding:10px 14px;
+  text-decoration:none;
+  font-weight:bold;
+  white-space:nowrap;
+}
+nav a:hover{background:#a00000;}
+
+/* SEARCH */
+.search{
+  background:white;
+  padding:15px;
   text-align:center;
+}
+.search input{
+  width:90%;
   padding:10px;
+  font-size:16px;
+  border-radius:25px;
+  border:1px solid #ccc;
 }
 
-nav a{
-  margin:8px;
-  text-decoration:none;
-  color:#9b0000;
+/* MARQUEE */
+.marquee{
+  background:#fff3cd;
+  color:#b71c1c;
+  padding:8px;
   font-weight:bold;
 }
 
+/* COLOR BOX */
+.color-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:10px;
+}
+.color-box{
+  color:white;
+  padding:15px;
+  text-align:center;
+  border-radius:8px;
+  font-weight:bold;
+}
+
+/* UPDATE BOX */
+.section{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:10px;
+  padding:10px;
+}
 .box{
   background:white;
-  margin:10px;
-  padding:15px;
   border-radius:6px;
-  border-left:5px solid #9b0000;
+  overflow:hidden;
+  border:1px solid #ddd;
 }
-
 .box h3{
   margin:0;
-  font-size:16px;
-  color:#9b0000;
-}
-
-.new{
-  background:red;
+  padding:10px;
   color:white;
-  font-size:11px;
-  padding:2px 6px;
-  border-radius:4px;
-  margin-left:5px;
+  font-size:16px;
+}
+.box ul{
+  list-style:none;
+  padding:10px;
+  margin:0;
+}
+.box ul li{
+  padding:6px 0;
+  border-bottom:1px dotted #ccc;
+  font-size:14px;
+}
+.box ul li:last-child{border:none;}
+
+/* SOCIAL */
+.social{
+  text-align:center;
+  padding:15px;
+}
+.social a{
+  display:inline-block;
+  margin:5px;
+  padding:10px 15px;
+  color:white;
+  border-radius:50%;
+  text-decoration:none;
 }
 
 footer{
   background:#222;
   color:white;
   text-align:center;
-  padding:12px;
+  padding:10px;
   font-size:13px;
+}
+
+/* MOBILE */
+@media(max-width:800px){
+  .section{grid-template-columns:1fr;}
 }
 </style>
 </head>
@@ -75,103 +138,86 @@ footer{
 
 <header>
   <h1>JHAKASH NET POINT</h1>
-  <p>Latest Jobs • Govt Exam • Sarkari Yojana</p>
+  <p>Fast Job • Result • Exam • Sarkari Yojana</p>
 </header>
 
 <nav>
-  <a href="#">Latest Jobs</a>
-  <a href="#">Admit Card</a>
+  <a href="#">Latest Job</a>
   <a href="#">Result</a>
-  <a href="#">Yojana</a>
+  <a href="#">Admit Card</a>
+  <a href="#">Admission</a>
+  <a href="#">Scholarship</a>
+  <a href="#">Answer Key</a>
+  <a href="#">Syllabus</a>
 </nav>
 
-<div class="box">
-  <input type="text" id="searchBox"
-  placeholder="🔍 Search Job / Exam / Yojana"
-  style="width:100%;padding:10px;font-size:16px"
-  onkeyup="searchPost()">
+<div class="search">
+  <input type="text" placeholder="Search Latest Jobs, Result, Admit Card...">
 </div>
 
-<div id="posts"></div>
+<div class="marquee">
+  <marquee>
+    🔔 Bihar SSC Vacancy 2025 | Railway Group D Update | New Scholarship 2025 | Govt Exam Notice
+  </marquee>
+</div>
 
-<!-- FIREBASE -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- COLOR BOX -->
+<div class="color-grid">
+  <div class="color-box" style="background:#2e7d32;">Scholarship 2025</div>
+  <div class="color-box" style="background:#6a1b9a;">12th Pass Jobs</div>
+  <div class="color-box" style="background:#ef6c00;">Bihar Yojana</div>
+  <div class="color-box" style="background:#0277bd;">Model Paper 2026</div>
+</div>
 
-<script>
-const firebaseConfig = {
-  apiKey: "AIzaSyAkboejn-LfL0dsTKbGHA4QkM1cVP_7HZY",
-  authDomain: "admin-pannel-a598f.firebaseapp.com",
-  projectId: "admin-pannel-a598f",
-  storageBucket: "admin-pannel-a598f.firebasestorage.app",
-  messagingSenderId: "892006987784",
-  appId: "1:892006987784:web:ed97c609f77edad8d339bd"
-};
+<!-- UPDATE SECTION -->
+<div class="section">
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+  <!-- NEW UPDATE -->
+  <div class="box">
+    <h3 style="background:#d32f2f;">New Update</h3>
+    <ul>
+      <li>✔ Bihar Board Result 2025</li>
+      <li>✔ SSC GD New Notice</li>
+      <li>✔ Railway Group D Update</li>
+      <li>✔ Scholarship Online Form</li>
+    </ul>
+  </div>
 
-let allPosts = [];
+  <!-- LATEST JOB -->
+  <div class="box">
+    <h3 style="background:#1976d2;">Latest Job</h3>
+    <ul>
+      <li>✔ Bihar Police Vacancy 2025</li>
+      <li>✔ SSC CHSL Online Form</li>
+      <li>✔ Army Agniveer Bharti</li>
+      <li>✔ ITI Apprentice Job</li>
+    </ul>
+  </div>
 
-/* LOAD POSTS */
-db.collection("posts")
-.orderBy("date","desc")
-.onSnapshot(snapshot=>{
-  allPosts = [];
-  snapshot.forEach(doc=>{
-    allPosts.push({
-      id: doc.id,
-      ...doc.data()
-    });
-  });
-  renderPosts(allPosts);
-});
+  <!-- RESULT -->
+  <div class="box">
+    <h3 style="background:#2e7d32;">Result</h3>
+    <ul>
+      <li>✔ SSC GD Result</li>
+      <li>✔ Railway NTPC Result</li>
+      <li>✔ Bihar Board 10th</li>
+      <li>✔ University Result</li>
+    </ul>
+  </div>
 
-/* RENDER POSTS */
-function renderPosts(list){
-  let html = "";
-  list.forEach(item=>{
-    let isNew = "";
+</div>
 
-    if(item.date){
-      const diff = Date.now() - item.date.toDate().getTime();
-      if(diff < 2 * 24 * 60 * 60 * 1000){
-        isNew = '<span class="new">NEW</span>';
-      }
-    }
-
-    html += `
-      <div class="box">
-        <h3>
-          <a href="post.html?id=${item.id}"
-          style="text-decoration:none;color:#9b0000">
-            ${item.title}
-          </a>
-          ${isNew}
-        </h3>
-        <p><b>${item.category}</b></p>
-        <p>${item.description.substring(0,120)}...</p>
-      </div>
-    `;
-  });
-
-  document.getElementById("posts").innerHTML = html;
-}
-
-/* SEARCH */
-function searchPost(){
-  const text = document.getElementById("searchBox").value.toLowerCase();
-  const result = allPosts.filter(p =>
-    p.title.toLowerCase().includes(text) ||
-    p.category.toLowerCase().includes(text)
-  );
-  renderPosts(result);
-}
-</script>
+<!-- SOCIAL -->
+<div class="social">
+  <a href="#" style="background:#25D366;">W</a>
+  <a href="#" style="background:#0088cc;">T</a>
+  <a href="#" style="background:#E1306C;">I</a>
+  <a href="#" style="background:#1877F2;">F</a>
+</div>
 
 <footer>
 © 2026 Jhakash Net Point | All Rights Reserved
 </footer>
 
 </body>
-</html>
+  </html>
